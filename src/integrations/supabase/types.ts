@@ -9,7 +9,191 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
-      [_ in never]: never
+      addresses: {
+        Row: {
+          address_line: string
+          area: string | null
+          city: string
+          created_at: string | null
+          id: string
+          is_default: boolean | null
+          pin_code: string
+          title: string
+          user_id: string
+        }
+        Insert: {
+          address_line: string
+          area?: string | null
+          city: string
+          created_at?: string | null
+          id?: string
+          is_default?: boolean | null
+          pin_code: string
+          title: string
+          user_id: string
+        }
+        Update: {
+          address_line?: string
+          area?: string | null
+          city?: string
+          created_at?: string | null
+          id?: string
+          is_default?: boolean | null
+          pin_code?: string
+          title?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "addresses_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      booking_photos: {
+        Row: {
+          booking_id: string
+          created_at: string | null
+          id: string
+          photo_url: string
+        }
+        Insert: {
+          booking_id: string
+          created_at?: string | null
+          id?: string
+          photo_url: string
+        }
+        Update: {
+          booking_id?: string
+          created_at?: string | null
+          id?: string
+          photo_url?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "booking_photos_booking_id_fkey"
+            columns: ["booking_id"]
+            isOneToOne: false
+            referencedRelation: "bookings"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      bookings: {
+        Row: {
+          agent_notes: string | null
+          created_at: string | null
+          estimated_price: number | null
+          final_price: number | null
+          id: string
+          material_category: Database["public"]["Enums"]["material_category"]
+          payment_method: Database["public"]["Enums"]["payment_method"] | null
+          pickup_address_id: string
+          pickup_date: string
+          quantity_estimation: string
+          special_instructions: string | null
+          status: Database["public"]["Enums"]["booking_status"] | null
+          time_slot: string
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          agent_notes?: string | null
+          created_at?: string | null
+          estimated_price?: number | null
+          final_price?: number | null
+          id?: string
+          material_category: Database["public"]["Enums"]["material_category"]
+          payment_method?: Database["public"]["Enums"]["payment_method"] | null
+          pickup_address_id: string
+          pickup_date: string
+          quantity_estimation: string
+          special_instructions?: string | null
+          status?: Database["public"]["Enums"]["booking_status"] | null
+          time_slot: string
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          agent_notes?: string | null
+          created_at?: string | null
+          estimated_price?: number | null
+          final_price?: number | null
+          id?: string
+          material_category?: Database["public"]["Enums"]["material_category"]
+          payment_method?: Database["public"]["Enums"]["payment_method"] | null
+          pickup_address_id?: string
+          pickup_date?: string
+          quantity_estimation?: string
+          special_instructions?: string | null
+          status?: Database["public"]["Enums"]["booking_status"] | null
+          time_slot?: string
+          updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "bookings_pickup_address_id_fkey"
+            columns: ["pickup_address_id"]
+            isOneToOne: false
+            referencedRelation: "addresses"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "bookings_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      profiles: {
+        Row: {
+          created_at: string | null
+          full_name: string | null
+          id: string
+          location_lat: number | null
+          location_lng: number | null
+          phone: string | null
+          pin_code: string | null
+          preferred_language: Database["public"]["Enums"]["app_language"] | null
+          push_notifications_enabled: boolean | null
+          updated_at: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          full_name?: string | null
+          id: string
+          location_lat?: number | null
+          location_lng?: number | null
+          phone?: string | null
+          pin_code?: string | null
+          preferred_language?:
+            | Database["public"]["Enums"]["app_language"]
+            | null
+          push_notifications_enabled?: boolean | null
+          updated_at?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          full_name?: string | null
+          id?: string
+          location_lat?: number | null
+          location_lng?: number | null
+          phone?: string | null
+          pin_code?: string | null
+          preferred_language?:
+            | Database["public"]["Enums"]["app_language"]
+            | null
+          push_notifications_enabled?: boolean | null
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
@@ -18,7 +202,20 @@ export type Database = {
       [_ in never]: never
     }
     Enums: {
-      [_ in never]: never
+      app_language: "english" | "hindi"
+      booking_status:
+        | "scheduled"
+        | "agent_on_way"
+        | "in_progress"
+        | "completed"
+        | "cancelled"
+      material_category:
+        | "paper_cardboard"
+        | "plastic"
+        | "metal"
+        | "electronics"
+        | "glass"
+      payment_method: "upi" | "cash"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -133,6 +330,23 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      app_language: ["english", "hindi"],
+      booking_status: [
+        "scheduled",
+        "agent_on_way",
+        "in_progress",
+        "completed",
+        "cancelled",
+      ],
+      material_category: [
+        "paper_cardboard",
+        "plastic",
+        "metal",
+        "electronics",
+        "glass",
+      ],
+      payment_method: ["upi", "cash"],
+    },
   },
 } as const
