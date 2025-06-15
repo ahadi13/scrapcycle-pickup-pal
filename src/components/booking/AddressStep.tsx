@@ -18,6 +18,18 @@ interface Address {
   pinCode: string;
 }
 
+interface DatabaseAddress {
+  id: string;
+  title: string;
+  address_line: string;
+  area: string | null;
+  city: string;
+  pin_code: string;
+  user_id: string;
+  created_at: string;
+  is_default: boolean | null;
+}
+
 interface AddressStepProps {
   address: Address;
   onChange: (address: Address) => void;
@@ -48,7 +60,16 @@ const AddressStep: React.FC<AddressStepProps> = ({
       .order('created_at', { ascending: false });
 
     if (data) {
-      setSavedAddresses(data);
+      // Transform database format to frontend format
+      const transformedAddresses: Address[] = data.map((dbAddr: DatabaseAddress) => ({
+        id: dbAddr.id,
+        title: dbAddr.title,
+        addressLine: dbAddr.address_line,
+        area: dbAddr.area || '',
+        city: dbAddr.city,
+        pinCode: dbAddr.pin_code,
+      }));
+      setSavedAddresses(transformedAddresses);
     }
   };
 
@@ -59,10 +80,10 @@ const AddressStep: React.FC<AddressStepProps> = ({
       onChange({
         id: selectedAddr.id,
         title: selectedAddr.title,
-        addressLine: selectedAddr.address_line,
-        area: selectedAddr.area || '',
+        addressLine: selectedAddr.addressLine,
+        area: selectedAddr.area,
         city: selectedAddr.city,
-        pinCode: selectedAddr.pin_code,
+        pinCode: selectedAddr.pinCode,
       });
       setIsAddingNew(false);
     }
@@ -129,11 +150,11 @@ const AddressStep: React.FC<AddressStepProps> = ({
                       <div>
                         <h4 className="font-medium">{addr.title}</h4>
                         <p className="text-sm text-gray-600">
-                          {addr.address_line}
+                          {addr.addressLine}
                           {addr.area && `, ${addr.area}`}
                         </p>
                         <p className="text-sm text-gray-600">
-                          {addr.city}, {addr.pin_code}
+                          {addr.city}, {addr.pinCode}
                         </p>
                       </div>
                     </div>
