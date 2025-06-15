@@ -2,9 +2,8 @@
 import React from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Calendar } from '@/components/ui/calendar';
 import { Label } from '@/components/ui/label';
-import { Clock } from 'lucide-react';
+import { Clock, CalendarDays } from 'lucide-react';
 import { format, addDays, isToday, isTomorrow } from 'date-fns';
 
 interface TimeSlotStepProps {
@@ -33,7 +32,6 @@ const TimeSlotStep: React.FC<TimeSlotStepProps> = ({
   ];
 
   const today = new Date();
-  const maxDate = addDays(today, 7);
 
   const getDateLabel = (date: Date) => {
     if (isToday(date)) return 'Today';
@@ -59,7 +57,7 @@ const TimeSlotStep: React.FC<TimeSlotStepProps> = ({
         <Card>
           <CardHeader>
             <CardTitle className="flex items-center">
-              <Calendar className="h-5 w-5 mr-2" />
+              <CalendarDays className="h-5 w-5 mr-2" />
               Select Date
             </CardTitle>
           </CardHeader>
@@ -73,8 +71,10 @@ const TimeSlotStep: React.FC<TimeSlotStepProps> = ({
                   <Button
                     key={dateStr}
                     variant={isSelected ? 'default' : 'outline'}
-                    className={`p-4 h-auto flex flex-col ${
-                      isSelected ? 'bg-green-600 hover:bg-green-700' : ''
+                    className={`p-4 h-auto flex flex-col transition-all duration-200 ${
+                      isSelected 
+                        ? 'bg-green-600 hover:bg-green-700 text-white' 
+                        : 'hover:bg-green-50 hover:border-green-300'
                     }`}
                     onClick={() => onDateChange(dateStr)}
                   >
@@ -106,8 +106,10 @@ const TimeSlotStep: React.FC<TimeSlotStepProps> = ({
                   <Button
                     key={slot}
                     variant={isSelected ? 'default' : 'outline'}
-                    className={`w-full justify-start ${
-                      isSelected ? 'bg-green-600 hover:bg-green-700' : ''
+                    className={`w-full justify-start transition-all duration-200 ${
+                      isSelected 
+                        ? 'bg-green-600 hover:bg-green-700 text-white' 
+                        : 'hover:bg-green-50 hover:border-green-300'
                     }`}
                     onClick={() => onTimeSlotChange(slot)}
                   >
