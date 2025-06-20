@@ -28,9 +28,11 @@ const MobileLayout: React.FC<MobileLayoutProps> = ({ children }) => {
   }, []);
 
   return (
-    <div className={`min-h-screen ${isMobile ? 'mobile-app' : ''}`}>
-      {children}
-      <style jsx global>{`
+    <>
+      <div className={`min-h-screen ${isMobile ? 'mobile-app' : ''}`}>
+        {children}
+      </div>
+      <style>{`
         .mobile-app {
           /* Safe area handling for iOS */
           padding-top: env(safe-area-inset-top);
@@ -58,7 +60,7 @@ const MobileLayout: React.FC<MobileLayoutProps> = ({ children }) => {
           -webkit-touch-callout: none;
         }
       `}</style>
-    </div>
+    </>
   );
 };
 
