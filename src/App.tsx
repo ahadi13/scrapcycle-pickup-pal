@@ -11,6 +11,7 @@ import Home from "@/components/Home";
 import BookingPage from "@/components/booking/BookingPage";
 import ProfilePage from "@/components/profile/ProfilePage";
 import MyBookingsPage from "@/components/bookings/MyBookingsPage";
+import AdminDashboard from "@/components/admin/AdminDashboard";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -42,6 +43,11 @@ const App = () => (
               <Route path="/my-bookings" element={
                 <ProtectedRoute>
                   <MyBookingsPage />
+                </ProtectedRoute>
+              } />
+              <Route path="/admin" element={
+                <ProtectedRoute>
+                  <AdminDashboard />
                 </ProtectedRoute>
               } />
               <Route path="*" element={<NotFound />} />

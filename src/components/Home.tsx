@@ -20,8 +20,12 @@ const Home = () => {
     navigate('/profile');
   };
 
-  const handleMyBookings = () => {
+  const handleMyBookings = () =>  {
     navigate('/my-bookings');
+  };
+
+  const handleAdminDashboard = () => {
+    navigate('/admin');
   };
 
   return (
@@ -42,6 +46,15 @@ const Home = () => {
               >
                 <User className="h-4 w-4 mr-2" />
                 {isMobile ? '' : 'Profile'}
+              </Button>
+              <Button 
+                variant="outline" 
+                onClick={handleAdminDashboard}
+                size={isMobile ? "sm" : "default"}
+                className="bg-purple-50 border-purple-200 text-purple-700 hover:bg-purple-100"
+              >
+                <User className="h-4 w-4 mr-2" />
+                {isMobile ? 'Admin' : 'Admin Dashboard'}
               </Button>
               <Button 
                 variant="outline" 
