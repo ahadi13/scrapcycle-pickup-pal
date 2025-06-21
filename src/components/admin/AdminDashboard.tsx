@@ -29,19 +29,17 @@ const AdminDashboard = () => {
     try {
       const { data: profile, error } = await supabase
         .from('profiles')
-        .select('*')
+        .select('role')
         .eq('id', user.id)
         .single();
 
       console.log('Profile data:', profile);
       console.log('Profile error:', error);
 
-      // For now, check if user exists in profiles - in production you'd check role
-      // This will be updated once the role column is added via SQL migration
-      if (profile && !error) {
-        // Temporary: allow access for existing users until role column is added
+      if (profile && profile.role === 'admin') {
         setIsAdmin(true);
       } else {
+        console.log('Access denied: User is not an admin');
         navigate('/');
       }
     } catch (error) {
@@ -61,7 +59,18 @@ const AdminDashboard = () => {
   }
 
   if (!isAdmin) {
-    return null;
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-green-50 to-green-100 flex items-center justify-center">
+        <div className="text-center">
+          <h1 className="text-2xl font-bold text-gray-900 mb-4">Access Denied</h1>
+          <p className="text-gray-600 mb-6">You don't have permission to access the admin dashboard.</p>
+          <Button onClick={() => navigate('/')}>
+            <ArrowLeft className="h-4 w-4 mr-2" />
+            Back to Home
+          </Button>
+        </div>
+      </div>
+    );
   }
 
   return (
