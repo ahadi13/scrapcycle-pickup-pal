@@ -7,6 +7,9 @@ import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } f
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { MapPin, Clock, Package, User, Phone, Camera, CreditCard } from 'lucide-react';
 import { format } from 'date-fns';
+import { Database } from '@/integrations/supabase/types';
+
+type BookingStatus = Database['public']['Enums']['booking_status'];
 
 interface Booking {
   id: string;
@@ -15,7 +18,7 @@ interface Booking {
   pickup_date: string;
   time_slot: string;
   special_instructions: string | null;
-  status: string;
+  status: BookingStatus;
   estimated_price: number | null;
   final_price: number | null;
   payment_method: string | null;
@@ -48,7 +51,7 @@ const BookingDetailsModal: React.FC<BookingDetailsModalProps> = ({
 }) => {
   if (!booking) return null;
 
-  const getStatusBadge = (status: string) => {
+  const getStatusBadge = (status: BookingStatus) => {
     const statusConfig = {
       scheduled: { variant: 'secondary' as const, text: 'Scheduled' },
       agent_on_way: { variant: 'default' as const, text: 'Agent On Way' },
@@ -57,7 +60,7 @@ const BookingDetailsModal: React.FC<BookingDetailsModalProps> = ({
       cancelled: { variant: 'destructive' as const, text: 'Cancelled' },
     };
 
-    const config = statusConfig[status as keyof typeof statusConfig] || statusConfig.scheduled;
+    const config = statusConfig[status] || statusConfig.scheduled;
     return <Badge variant={config.variant}>{config.text}</Badge>;
   };
 

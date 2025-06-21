@@ -9,6 +9,9 @@ import { Eye, Phone, MapPin, Package, Calendar } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { format } from 'date-fns';
 import BookingDetailsModal from './BookingDetailsModal';
+import { Database } from '@/integrations/supabase/types';
+
+type BookingStatus = Database['public']['Enums']['booking_status'];
 
 interface Booking {
   id: string;
@@ -16,10 +19,12 @@ interface Booking {
   quantity_estimation: string;
   pickup_date: string;
   time_slot: string;
-  status: string;
+  status: BookingStatus;
   estimated_price: number | null;
   final_price: number | null;
   created_at: string;
+  special_instructions: string | null;
+  payment_method: string | null;
   profiles: {
     full_name: string | null;
     phone: string | null;
@@ -65,7 +70,7 @@ const BookingsTable = () => {
       .order('created_at', { ascending: false });
 
     if (statusFilter !== 'all') {
-      query = query.eq('status', statusFilter);
+      query = query.eq('status', statusFilter as BookingStatus);
     }
 
     const { data, error } = await query;
@@ -79,7 +84,7 @@ const BookingsTable = () => {
     setLoading(false);
   };
 
-  const updateBookingStatus = async (bookingId: string, newStatus: string) => {
+  const updateBookingStatus = async (bookingId: string, newStatus: BookingStatus) => {
     const { error } = await supabase
       .from('bookings')
       .update({ status: newStatus })
@@ -92,7 +97,7 @@ const BookingsTable = () => {
     }
   };
 
-  const getStatusBadge = (status: string) => {
+  const getStatusBadge = (status: BookingStatus) => {
     const statusConfig = {
       scheduled: { variant: 'secondary' as const, text: 'Scheduled' },
       agent_on_way: { variant: 'default' as const, text: 'Agent On Way' },
@@ -101,7 +106,7 @@ const BookingsTable = () => {
       cancelled: { variant: 'destructive' as const, text: 'Cancelled' },
     };
 
-    const config = statusConfig[status as keyof typeof statusConfig] || statusConfig.scheduled;
+    const config = statusConfig[status] || statusConfig.scheduled;
     return <Badge variant={config.variant}>{config.text}</Badge>;
   };
 
@@ -204,7 +209,7 @@ const BookingsTable = () => {
                           {getStatusBadge(booking.status)}
                           <Select
                             value={booking.status}
-                            onValueChange={(value) => updateBookingStatus(booking.id, value)}
+                            onValueChange={(value) => updateBookingStatus(booking.id, value as BookingStatus)}
                           >
                             <SelectTrigger className="w-36 h-8 text-xs">
                               <SelectValue />
@@ -253,7 +258,7 @@ const BookingsTable = () => {
         isOpen={!!selectedBooking}
         onClose={() => setSelectedBooking(null)}
         onStatusUpdate={(bookingId, status) => {
-          updateBookingStatus(bookingId, status);
+          updateBookingStatus(bookingId, status as BookingStatus);
           setSelectedBooking(null);
         }}
       />
