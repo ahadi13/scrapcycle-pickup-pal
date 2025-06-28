@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
 import { Button } from '@/components/ui/button';
@@ -29,15 +28,32 @@ const AdminDashboard = () => {
     try {
       const { data: profile, error } = await supabase
         .from('profiles')
-        .select('role')
+        .select('*')
         .eq('id', user.id)
         .single();
 
       console.log('Profile data:', profile);
       console.log('Profile error:', error);
 
-      if (profile && profile.role === 'admin') {
+      if (error) {
+        console.error('Error fetching profile:', error);
+        navigate('/');
+        return;
+      }
+
+      // Check if role column exists and user is admin
+      if (profile && 'role' in profile && profile.role === 'admin') {
         setIsAdmin(true);
+      } else if (profile && !('role' in profile)) {
+        // Role column doesn't exist yet - check if user email is the admin email
+        // This is a temporary fallback until the SQL migration is applied
+        console.log('Role column not found, checking email for admin access');
+        if (user.email === 'bavaniabdulhadi@scrapiz.in') {
+          setIsAdmin(true);
+        } else {
+          console.log('Access denied: User is not the specified admin email');
+          navigate('/');
+        }
       } else {
         console.log('Access denied: User is not an admin');
         navigate('/');
